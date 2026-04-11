@@ -334,14 +334,7 @@ function togglePlay() {
   } else { clearInterval(interval); }
 }
 
-function resetTimeline() { if (playing) togglePlay(); update(WEEKS.length - 1);
-    setTimeout(function() {
-      d3.select('#arcs-g').selectAll('path').each(function(d, i) {
-        d3.select(this)
-          .style('animation', 'pulse-arc ' + (2.5 + (i % 7) * 0.4) + 's ease-in-out infinite')
-          .style('animation-delay', (i % 11) * 0.25 + 's');
-      });
-    }, 1000); }
+function resetTimeline() { if (playing) togglePlay(); update(0); }
 
 function setSpeed(s, el) {
   speed = s;
@@ -364,9 +357,20 @@ window.addEventListener('load', () => {
   document.getElementById('slider').max = WEEKS.length - 1;
   setupChart();
   setupMap();
-  update(0);
+  // Show final week after map loads
+  setTimeout(function() {
+    update(WEEKS.length - 1);
+    // Add pulsing to flow arcs
+    setTimeout(function() {
+      d3.select('#arcs-g').selectAll('path').each(function(d, i) {
+        d3.select(this)
+          .style('animation', 'pulse-arc ' + (2.5 + (i % 7) * 0.4) + 's ease-in-out infinite')
+          .style('animation-delay', (i % 11) * 0.25 + 's');
+      });
+    }, 1000);
+  }, 1500);
 });
-window.addEventListener('resize', () => { setupChart(); setupMap(); setTimeout(() => update(WEEKS.length - 1), 500); });
+window.addEventListener('resize', () => { setupChart(); setupMap(); setTimeout(() => update(WEEKS.length - 1), 1500); });
 </script>
 </body>
 </html>
