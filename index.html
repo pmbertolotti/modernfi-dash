@@ -24,7 +24,7 @@ html, body { height: 100%; overflow: hidden; }
 @keyframes pulse-arc { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
 .panel { background: #fff; border-radius: 10px; border: 1px solid #ddd; padding: 20px; overflow: hidden; height: 100%; }
 .panel-left { flex: 1 1 38%; display: flex; flex-direction: column; }
-.panel-right { flex: 1 1 62%; position: relative; }
+.panel-right { flex: 1 1 62%; position: relative; overflow: hidden; }
 .panel-title { font-size: 14px; font-weight: 700; color: #8a8a8a; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
 .controls { display: none; }
 .btn { border: 1px solid #ddd; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 600; padding: 7px 14px; background: #fff; color: #555; transition: all 0.15s; font-family: inherit; }
@@ -203,12 +203,19 @@ function updateChart(idx) {
 
 function setupMap() {
   const el = document.getElementById('map');
+  el.innerHTML = '';
+  el.style.width = '100%';
+  el.style.height = '100%';
+  el.style.overflow = 'hidden';
   const rect = el.parentElement.getBoundingClientRect();
-  const w = rect.width - 40;
-  const h = rect.height - 40;
+  const padX = 40, padY = 50;
+  const w = rect.width - padX;
+  const h = rect.height - padY;
 
-  projection = d3.geoAlbersUsa().fitSize([w, h], {type:'Sphere'});
-  const svg = d3.select('#map').append('svg').attr('width',w).attr('height',h);
+  projection = d3.geoAlbersUsa().fitSize([w, h * 0.95], {type:'Sphere'});
+  const svg = d3.select('#map').append('svg')
+    .attr('width', w).attr('height', h)
+    .style('display','block');
 
   d3.json('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json').then(us => {
     const pathGen = d3.geoPath().projection(projection);
